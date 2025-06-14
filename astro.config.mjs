@@ -4,5 +4,17 @@ import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   site: "https://weird-science-news.com",
-  integrations: [tailwind(), sitemap()],
+  output: "static",
+  build: {
+    inlineStylesheets: "auto",
+  },
+  integrations: [
+    tailwind(),
+    sitemap({
+      serialize(item) {
+        if (/404/.test(item.url)) return undefined;
+        return item;
+      },
+    }),
+  ],
 });
