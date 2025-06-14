@@ -8,7 +8,7 @@ export default defineConfig({
     tailwind(),
     sitemap({
       customPages: [`${new URL("https://weird-science-news.com").origin}`],
-      filter: (page) => !page.includes("404")
+      filter: (page) => !page.includes("404"),
     }),
   ],
 });
