@@ -1,0 +1,28 @@
+---
+export interface Props {
+  title: string;
+  date: string;
+  summary: string;
+  tags: string[];
+}
+const { title, date, summary, tags } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles/global.css">
+  </head>
+  <body class="max-w-2xl mx-auto p-4">
+    <article>
+      <h1 class="text-4xl font-bold mb-2">{title}</h1>
+      <p class="text-sm text-gray-500">{date}</p>
+      <p class="italic my-4">{summary}</p>
+      <slot />
+      <div class="mt-6 text-sm text-gray-600">
+        Tags: {tags.join(", ")}
+      </div>
+    </article>
+  </body>
+</html>
