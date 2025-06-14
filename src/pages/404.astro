@@ -1,50 +1,39 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const postImports = import.meta.glob("../content/*.md", { eager: true });
+const recentPosts = Object.entries(postImports)
+  .map(([path, mod]) => {
+    const slug = path.split("/").pop().replace(".md", "");
+    return {
+      ...mod.frontmatter,
+      slug,
+    };
+  })
+  .sort((a, b) => new Date(b.date) - new Date(a.date))
+  .slice(0, 3); // Get only the 3 most recent posts
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Page Not Found — Weird Science News</title>
-    <link rel="stylesheet" href="/styles/global.css" />
-  </head>
-  <body class="max-w-3xl mx-auto p-6 text-center">
-    <h1 class="text-6xl font-bold mb-4">404</h1>
-    <p class="text-xl mb-6">Oops! The page you're looking for doesn't exist.</p>
-    <p class="mb-8">
+<BaseLayout title="Page Not Found — Weird Science News" description="404 - Page not found">
+  <div class="max-w-3xl mx-auto text-center">
+    <h1 class="text-6xl font-bold mb-4 text-gray-900 dark:text-gray-100">404</h1>
+    <p class="text-xl mb-6 text-gray-700 dark:text-gray-300">Oops! The page you're looking for doesn't exist.</p>
+    <p class="mb-8 text-gray-600 dark:text-gray-400">
       But weird science never sleeps — here are some articles you might like:
-    </p>
-
-    <ul class="list-disc list-inside text-left max-w-lg mx-auto">
-      <li>
-        <a href="/" class="text-blue-600 hover:underline"
-          >Home - Latest Science News</a>
-      </li>
-      <li>
-        <a href="/posts/zombie-ants" class="text-blue-600 hover:underline"
-          >Zombie Ants and Mind Control Fungi</a>
-      </li>
-      <li>
-        <a
-          href="/posts/time-dilation-is-weird"
-          class="text-blue-600 hover:underline">Time Dilation is Weird</a>
-      </li>
-      <li>
-        <a
-          href="/posts/black-hole-mysteries"
-          class="text-blue-600 hover:underline">Black Hole Mysteries</a>
-      </li>
+    </p>    <ul class="list-disc list-inside text-left max-w-lg mx-auto space-y-3">
+      {recentPosts.map((post) => (
+        <li>
+          <a href={`/posts/${post.slug}`} class="text-blue-600 dark:text-blue-400 hover:underline">
+            {post.title}
+          </a>
+        </li>
+      ))}
     </ul>
 
-    <p class="mt-10">
-      Or use the search bar (coming soon) to find your favorite weird science
-      topics!
-    </p>
-
-    <a
-      href="/"
-      class="inline-block mt-8 px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-    >
-      Back to Home
-    </a>
-  </body>
-</html>
+    <div class="mt-8">
+      <a href="/" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+        &larr; Back to Home
+      </a>
+    </div>
+  </div>
+</BaseLayout>
