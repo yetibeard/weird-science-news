@@ -1,5 +1,7 @@
 ---
 import SEO from "../components/SEO.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import "../styles/base.css";
 
 const postImports = import.meta.glob("../content/*.md", { eager: true });
 
@@ -32,7 +34,7 @@ const structuredData = {
 };
 ---
 
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <SEO />
@@ -42,22 +44,30 @@ const structuredData = {
       set:html={JSON.stringify(structuredData)}
     />
   </head>
-  <body class="max-w-3xl mx-auto p-6">
-    <h1 class="text-5xl font-bold mb-6">🧪 Weird Science News</h1>
-    <ul>
-      {
-        posts.map((post) => (
-          <li class="mb-4">
-            <a
-              href={`/posts/${post.slug}`}
-              class="text-xl text-blue-600 hover:underline"
-            >
-              {post.title}
-            </a>
-            <p class="text-gray-600">{post.summary}</p>
-          </li>
-        ))
-      }
-    </ul>
+  <body class="theme-transition">
+    <ThemeToggle />
+    <main class="max-w-3xl mx-auto p-6">
+      <h1 class="text-5xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+        🧪 Weird Science News
+      </h1>
+      <ul class="space-y-4">
+        {
+          posts.map((post) => (
+            <li class="group">
+              <a
+                href={`/posts/${post.slug}`}
+                class="text-xl text-blue-600 dark:text-blue-400 hover:underline block"
+              >
+                {post.title}
+              </a>
+              <p class="text-gray-600 dark:text-gray-400">{post.summary}</p>
+              <div class="text-sm text-gray-500 dark:text-gray-500">
+                {new Date(post.date).toLocaleDateString()}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
   </body>
 </html>

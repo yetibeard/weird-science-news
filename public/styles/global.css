@@ -8,16 +8,20 @@
   box-sizing: border-box;
 }
 
+:root {
+  --transition-duration: 200ms;
+}
+
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background-color: #fff;
-  color: #111;
   line-height: 1.6;
   padding: 1rem;
   max-width: 720px;
   margin-left: auto;
   margin-right: auto;
+  transition: background-color var(--transition-duration),
+    color var(--transition-duration);
 }
 
 a {
