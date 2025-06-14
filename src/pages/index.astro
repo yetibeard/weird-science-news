@@ -1,4 +1,6 @@
 ---
+import SEO from "../components/SEO.astro";
+
 const postImports = import.meta.glob("../content/*.md", { eager: true });
 
 const posts = Object.entries(postImports)
@@ -10,13 +12,35 @@ const posts = Object.entries(postImports)
     };
   })
   .sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
+
+// Create structured data for the website
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Weird Science News",
+  description:
+    "Explore fascinating and unusual discoveries from the world of science",
+  url: import.meta.env.SITE || "https://weird-science-news.com",
+  publisher: {
+    "@type": "Organization",
+    name: "Weird Science News",
+    logo: {
+      "@type": "ImageObject",
+      url: "/images/logo.png",
+    },
+  },
+};
 ---
 
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Weird Science News</title>
+    <SEO />
     <link rel="stylesheet" href="/styles/global.css" />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
   </head>
   <body class="max-w-3xl mx-auto p-6">
     <h1 class="text-5xl font-bold mb-6">🧪 Weird Science News</h1>

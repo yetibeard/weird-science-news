@@ -1,0 +1,43 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+  pathname?: string;
+}
+
+const {
+  title = "Weird Science News",
+  description = "Explore fascinating and unusual discoveries from the world of science",
+  image = "/images/default-og.png",
+  article = false,
+  pathname = "",
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE || "https://weird-science-news.com";
+const canonicalURL = new URL(pathname, siteUrl);
+---
+
+<!-- SEO -->
+<meta name="description" content={description} />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Open Graph -->
+<meta property="og:site_name" content="Weird Science News" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={new URL(image, siteUrl)} />
+<meta property="og:type" content={article ? "article" : "website"} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={new URL(image, siteUrl)} />
+
+<!-- Robots -->
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
