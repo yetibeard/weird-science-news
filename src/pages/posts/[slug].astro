@@ -1,9 +1,8 @@
 ---
 import { Markdown } from "astro/components";
 
-const postImports = import.meta.glob("../../content/*.md");
-
 export async function getStaticPaths() {
+  const postImports = import.meta.glob("../../content/*.md");
   return Object.entries(postImports).map(([path, loader]) => {
     const slug = path.split("/").pop().replace(".md", "");
     return {
