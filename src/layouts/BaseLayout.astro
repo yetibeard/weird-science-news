@@ -1,0 +1,46 @@
+---
+import "../styles/base.css";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import SEO from "../components/SEO.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = "Weird Science News",
+  description = "Explore fascinating and unusual discoveries from the world of science",
+  image = "/images/default-og.png",
+} = Astro.props;
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <SEO title={title} description={description} image={image} />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body class="min-h-screen flex flex-col theme-transition">
+    <ThemeToggle />
+    <Navigation />
+    
+    <main class="flex-grow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <slot />
+      </div>
+    </main>
+
+    <Footer />
+
+    <script>
+      // Handle initial theme
+      const theme = localStorage.getItem("theme") || "dark";
+      document.documentElement.classList.toggle("dark", theme === "dark");
+    </script>
+  </body>
+</html>
