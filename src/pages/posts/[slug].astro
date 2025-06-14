@@ -1,18 +1,20 @@
 ---
 import { Markdown } from "astro/components";
+
 const postImports = import.meta.glob("../../content/*.md");
 
-const { slug } = Astro.params;
-const filePath = `../../content/${slug}.md`;
+export async function getStaticPaths() {
+  return Object.entries(postImports).map(([path, loader]) => {
+    const slug = path.split("/").pop().replace(".md", "");
+    return {
+      params: { slug },
+      props: { loader },
+    };
+  });
+}
 
-const getPost = async () => {
-  const loader = postImports[filePath];
-  if (!loader) throw new Error(`Post not found: ${slug}`);
-  const { default: Content, frontmatter } = await loader();
-  return { Content, frontmatter };
-};
-
-const { Content, frontmatter } = await getPost();
+const { loader } = Astro.props;
+const { default: Content, frontmatter } = await loader();
 ---
 
 <html lang="en">
@@ -22,8 +24,7 @@ const { Content, frontmatter } = await getPost();
     <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body class="max-w-3xl mx-auto p-6">
-    <a href="/" class="text-blue-600 hover:underline">&larr; Back to homepage</a
-    >
+    <a href="/" class="text-blue-600 hover:underline">&larr; Back</a>
     <h1 class="text-4xl font-bold mt-4 mb-2">{frontmatter.title}</h1>
     <p class="text-gray-600 mb-6">{frontmatter.date}</p>
     <article class="prose prose-lg">
