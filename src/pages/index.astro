@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsletterSignup from "../components/NewsletterSignup.astro";
 
 const postImports = import.meta.glob("../content/*.md", { eager: true });
 
@@ -36,6 +37,9 @@ const structuredData = {
   <h1 class="text-5xl font-bold mb-6 text-gray-900 dark:text-gray-100">
     Latest Articles
   </h1>
+  
+  <NewsletterSignup />
+  
   <ul class="space-y-6">
     {
       posts.map((post) => (
