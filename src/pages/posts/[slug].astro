@@ -20,7 +20,8 @@ const { default: Content, frontmatter } = await loader();
   title={frontmatter.title}
   date={frontmatter.date}
   summary={frontmatter.summary}
-  tags={frontmatter.tags}>
+  tags={frontmatter.tags}
+  author={frontmatter.author}>
   <div class="prose dark:prose-invert prose-lg max-w-none">
     <Content />
   </div>

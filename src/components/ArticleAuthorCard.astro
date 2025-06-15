@@ -1,0 +1,50 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  avatar?: string;
+  bio: string;
+  slug: string;
+}
+
+const { name, role, avatar, bio, slug } = Astro.props;
+const defaultAvatar = "/images/weird-science-logo.webp";
+---
+
+<div class="border-t border-b border-gray-200 dark:border-gray-700 py-8 my-8">
+  <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+    <a href={`/authors/${slug}`} class="flex-shrink-0 group">
+      <img
+        src={avatar || defaultAvatar}
+        alt={name}
+        class="w-24 h-24 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 group-hover:border-blue-500 dark:group-hover:border-blue-400 transition-colors"
+      />
+    </a>
+    
+    <div class="flex-1 text-center sm:text-left">
+      <a 
+        href={`/authors/${slug}`}
+        class="inline-block group"
+      >
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+          Written by {name}
+        </h3>
+        <p class="text-blue-600 dark:text-blue-400">{role}</p>
+      </a>
+      
+      <p class="text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
+        {bio}
+      </p>
+      
+      <a 
+        href={`/authors/${slug}`}
+        class="inline-flex items-center mt-3 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+      >
+        View full profile and all articles
+        <svg class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>

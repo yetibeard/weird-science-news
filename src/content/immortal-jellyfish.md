@@ -1,6 +1,7 @@
 ---
 title: "The Immortal Jellyfish: Nature's Eternal Enigma"
 date: 2025-06-14
+author: "alex-thompson"
 summary: "Discover the incredible jellyfish species that can potentially live forever by reversing its aging process."
 tags:
   - biology

@@ -1,6 +1,7 @@
 ---
 title: "Zombie Ants and Mind Control Fungi"
 date: 2025-06-14
+author: "alex-thompson"
 summary: "A fungus that controls ants like puppets from hell."
 tags: ["biology", "parasites", "behavior"]
 ---
