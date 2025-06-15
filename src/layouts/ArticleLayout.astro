@@ -14,13 +14,16 @@ export interface Props {
 }
 
 const { title, date, summary, tags, author } = Astro.props;
-const slug = Astro.url.pathname.split('/').pop();
 
 // Get author information
 const authorImports = import.meta.glob("../content/authors/*.md", { eager: true });
 const authorPath = Object.keys(authorImports).find(path => path.includes(author));
 const authorInfo = authorPath ? authorImports[authorPath].frontmatter : null;
 const defaultAvatar = "/images/weird-science-logo.webp";
+
+// Get current slug from the file path rather than URL
+const currentSlug = Astro.url.pathname.split('/posts/').pop()?.replace(/\/$/, '');
+console.log('ArticleLayout - Current Slug:', currentSlug);
 ---
 
 <BaseLayout title={title} description={summary}>
@@ -70,13 +73,13 @@ const defaultAvatar = "/images/weird-science-logo.webp";
       <ArticleAuthorCard 
         name={authorInfo.name}
         role={authorInfo.role}
-        avatar={authorInfo.avatar}
+        avatar={authorInfo.avatar || defaultAvatar}
         bio={authorInfo.bio}
         slug={author}
       />
     )}
 
-    <RelatedArticles currentSlug={slug} tags={tags} />
+    <RelatedArticles currentSlug={currentSlug} tags={tags} />
     
     <ShareButtons title={title} url={Astro.url.href} />
     <NewsletterSignup />

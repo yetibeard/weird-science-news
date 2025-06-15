@@ -6,32 +6,45 @@ interface Props {
 
 const { currentSlug, tags } = Astro.props;
 
+// Clean the current slug to ensure consistent format
+const cleanCurrentSlug = currentSlug?.replace(/^\/+|\/+$/g, '');
+console.log('Current Slug:', cleanCurrentSlug);
+
 // Get all articles
 const postImports = import.meta.glob("../content/*.md", { eager: true });
 const allPosts = Object.entries(postImports).map(([path, post]) => {
   const slug = path.split("/").pop().replace(".md", "");
+  console.log('Article Slug:', slug);
   return {
     ...(post as any).frontmatter,
     slug,
+    originalPath: path,
   };
 });
 
+console.log('All Posts:', allPosts.map(p => ({ slug: p.slug, title: p.title })));
+
 // Filter out current article and find related ones based on tags
 const relatedPosts = allPosts
-  .filter(post => post.slug !== currentSlug && post.slug) // Ensure we have a slug and it's not current
+  .filter(post => {
+    const isCurrentPost = post.slug === cleanCurrentSlug;
+    if (isCurrentPost) {
+      console.log('Filtered out:', post.slug);
+    }
+    return !isCurrentPost && post.slug;
+  })
   .map(post => ({
     ...post,
-    // Count matching tags
     matchingTags: tags.filter(tag => post.tags?.includes(tag)).length,
   }))
-  .filter(post => post.matchingTags > 0) // Only keep posts with at least one matching tag
+  .filter(post => post.matchingTags > 0)
   .sort((a, b) => 
-    // First sort by matching tags
     b.matchingTags - a.matchingTags ||
-    // Then by date if available
     (b.date && a.date ? new Date(b.date).getTime() - new Date(a.date).getTime() : 0)
   )
-  .slice(0, 3); // Get top 3 related articles
+  .slice(0, 3);
+
+console.log('Related Posts:', relatedPosts.map(p => ({ slug: p.slug, title: p.title })));
 ---
 
 {relatedPosts.length > 0 && (
