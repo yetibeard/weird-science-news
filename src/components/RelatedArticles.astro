@@ -8,31 +8,20 @@ const { currentSlug, tags } = Astro.props;
 
 // Clean the current slug to ensure consistent format
 const cleanCurrentSlug = currentSlug?.replace(/^\/+|\/+$/g, '');
-console.log('Current Slug:', cleanCurrentSlug);
 
 // Get all articles
 const postImports = import.meta.glob("../content/*.md", { eager: true });
 const allPosts = Object.entries(postImports).map(([path, post]) => {
   const slug = path.split("/").pop().replace(".md", "");
-  console.log('Article Slug:', slug);
   return {
     ...(post as any).frontmatter,
     slug,
-    originalPath: path,
   };
 });
 
-console.log('All Posts:', allPosts.map(p => ({ slug: p.slug, title: p.title })));
-
 // Filter out current article and find related ones based on tags
 const relatedPosts = allPosts
-  .filter(post => {
-    const isCurrentPost = post.slug === cleanCurrentSlug;
-    if (isCurrentPost) {
-      console.log('Filtered out:', post.slug);
-    }
-    return !isCurrentPost && post.slug;
-  })
+  .filter(post => post.slug !== cleanCurrentSlug && post.slug) // Fixed the logical operator
   .map(post => ({
     ...post,
     matchingTags: tags.filter(tag => post.tags?.includes(tag)).length,
@@ -43,8 +32,6 @@ const relatedPosts = allPosts
     (b.date && a.date ? new Date(b.date).getTime() - new Date(a.date).getTime() : 0)
   )
   .slice(0, 3);
-
-console.log('Related Posts:', relatedPosts.map(p => ({ slug: p.slug, title: p.title })));
 ---
 
 {relatedPosts.length > 0 && (

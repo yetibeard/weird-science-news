@@ -23,7 +23,6 @@ const defaultAvatar = "/images/weird-science-logo.webp";
 
 // Get current slug from the file path rather than URL
 const currentSlug = Astro.url.pathname.split('/posts/').pop()?.replace(/\/$/, '');
-console.log('ArticleLayout - Current Slug:', currentSlug);
 ---
 
 <BaseLayout title={title} description={summary}>
