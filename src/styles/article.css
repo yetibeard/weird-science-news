@@ -1,0 +1,137 @@
+/* Base article content styles */
+.article-content {
+  @apply text-gray-800 dark:text-gray-200 leading-relaxed;
+}
+
+/* Headings */
+.article-content h1 {
+  @apply text-4xl font-bold text-gray-900 dark:text-gray-100 mb-8 mt-6 leading-tight;
+}
+
+.article-content h2 {
+  @apply text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 mt-12 leading-tight;
+}
+
+.article-content h3 {
+  @apply text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 mt-8 leading-tight;
+}
+
+.article-content h4 {
+  @apply text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 mt-6;
+}
+
+/* Paragraphs and spacing */
+.article-content p {
+  @apply mb-6 text-lg;
+}
+
+.article-content p:first-of-type {
+  @apply text-xl font-medium leading-relaxed;
+}
+
+/* Lists */
+.article-content ul {
+  @apply mb-6 ml-6 list-disc;
+}
+
+.article-content ol {
+  @apply mb-6 ml-6 list-decimal;
+}
+
+.article-content li {
+  @apply mb-2;
+}
+
+/* Links */
+.article-content a {
+  @apply text-blue-600 dark:text-blue-400 hover:underline;
+}
+
+/* Blockquotes */
+.article-content blockquote {
+  @apply pl-4 border-l-4 border-blue-500 dark:border-blue-400 italic my-6 text-gray-700 dark:text-gray-300;
+}
+
+/* Code blocks */
+.article-content pre {
+  @apply bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-6 overflow-x-auto;
+}
+
+.article-content code {
+  @apply bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-sm;
+}
+
+/* Images */
+.article-content img {
+  @apply rounded-lg my-8 mx-auto max-w-full h-auto shadow-lg;
+}
+
+/* Figure captions */
+.article-content figcaption {
+  @apply text-center text-sm text-gray-600 dark:text-gray-400 mt-2 mb-6;
+}
+
+/* Tables */
+.article-content table {
+  @apply w-full mb-6 border-collapse;
+}
+
+.article-content th {
+  @apply bg-gray-100 dark:bg-gray-800 text-left p-2 border border-gray-300 dark:border-gray-700;
+}
+
+.article-content td {
+  @apply p-2 border border-gray-300 dark:border-gray-700;
+}
+
+/* Horizontal rule */
+.article-content hr {
+  @apply my-8 border-t border-gray-300 dark:border-gray-700;
+}
+
+/* Emphasis */
+.article-content strong {
+  @apply font-bold text-gray-900 dark:text-gray-100;
+}
+
+.article-content em {
+  @apply italic;
+}
+
+/* Special callouts */
+.article-content .callout {
+  @apply my-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800;
+}
+
+.article-content .callout strong {
+  @apply text-blue-800 dark:text-blue-300 block mb-2;
+}
+
+/* Pull quotes */
+.article-content .pull-quote {
+  @apply my-12 py-6 text-2xl font-bold text-center text-blue-600 dark:text-blue-400 italic border-t-2 border-b-2 border-blue-200 dark:border-blue-800;
+}
+
+/* Enhanced blockquotes */
+.article-content blockquote {
+  @apply pl-6 border-l-4 border-blue-500 dark:border-blue-400 italic my-8 text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-r-lg;
+}
+
+/* Article sections */
+.article-content section {
+  @apply mb-12;
+}
+
+/* Custom helper classes */
+.article-content .highlight {
+  @apply bg-yellow-100 dark:bg-yellow-900/30 px-1 rounded;
+}
+
+.article-content .callout {
+  @apply bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6 border-l-4 border-blue-500 dark:border-blue-400;
+}
+
+/* Pull quotes */
+.article-content .pull-quote {
+  @apply text-2xl font-serif italic text-gray-700 dark:text-gray-300 my-8 px-8 text-center;
+}

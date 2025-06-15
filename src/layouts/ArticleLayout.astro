@@ -4,6 +4,7 @@ import ShareButtons from "../components/ShareButtons.astro";
 import NewsletterSignup from "../components/NewsletterSignup.astro";
 import ArticleAuthorCard from "../components/ArticleAuthorCard.astro";
 import RelatedArticles from "../components/RelatedArticles.astro";
+import "../styles/article.css";
 
 export interface Props {
   title: string;
@@ -64,7 +65,7 @@ const currentSlug = Astro.url.pathname.split('/posts/').pop()?.replace(/\/$/, ''
       ))}
     </div>
     
-    <div class="prose dark:prose-invert prose-lg max-w-none">
+    <div class="article-content">
       <slot />
     </div>
 
