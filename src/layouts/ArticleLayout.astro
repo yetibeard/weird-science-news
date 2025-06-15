@@ -14,6 +14,7 @@ export interface Props {
 }
 
 const { title, date, summary, tags, author } = Astro.props;
+const slug = Astro.url.pathname.split('/').pop();
 
 // Get author information
 const authorImports = import.meta.glob("../content/authors/*.md", { eager: true });
@@ -75,7 +76,7 @@ const defaultAvatar = "/images/weird-science-logo.webp";
       />
     )}
 
-    <RelatedArticles currentSlug={Astro.url.pathname.split("/").pop()} tags={tags} />
+    <RelatedArticles currentSlug={slug} tags={tags} />
     
     <ShareButtons title={title} url={Astro.url.href} />
     <NewsletterSignup />

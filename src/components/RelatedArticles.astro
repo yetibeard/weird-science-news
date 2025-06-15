@@ -8,21 +8,29 @@ const { currentSlug, tags } = Astro.props;
 
 // Get all articles
 const postImports = import.meta.glob("../content/*.md", { eager: true });
-const allPosts = Object.entries(postImports).map(([path, post]) => ({
-  ...(post as any).frontmatter,
-  slug: path.split("/").pop().replace(".md", ""),
-}));
+const allPosts = Object.entries(postImports).map(([path, post]) => {
+  const slug = path.split("/").pop().replace(".md", "");
+  return {
+    ...(post as any).frontmatter,
+    slug,
+  };
+});
 
 // Filter out current article and find related ones based on tags
 const relatedPosts = allPosts
-  .filter(post => post.slug !== currentSlug) // Remove current article
+  .filter(post => post.slug !== currentSlug && post.slug) // Ensure we have a slug and it's not current
   .map(post => ({
     ...post,
     // Count matching tags
-    matchingTags: tags.filter(tag => post.tags.includes(tag)).length,
+    matchingTags: tags.filter(tag => post.tags?.includes(tag)).length,
   }))
   .filter(post => post.matchingTags > 0) // Only keep posts with at least one matching tag
-  .sort((a, b) => b.matchingTags - a.matchingTags) // Sort by number of matching tags
+  .sort((a, b) => 
+    // First sort by matching tags
+    b.matchingTags - a.matchingTags ||
+    // Then by date if available
+    (b.date && a.date ? new Date(b.date).getTime() - new Date(a.date).getTime() : 0)
+  )
   .slice(0, 3); // Get top 3 related articles
 ---
 
