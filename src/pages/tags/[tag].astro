@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const postImports = import.meta.glob("../../content/*.md", { eager: true });
+  
+  const posts = Object.entries(postImports).map(([path, mod]) => ({
+    ...mod.frontmatter,
+    slug: path.split("/").pop().replace(".md", ""),
+  }));
+
+  const tags = [...new Set(posts.flatMap(post => post.tags))];
+
+  return tags.map(tag => ({
+    params: { tag },
+    props: {
+      posts: posts.filter(post => post.tags.includes(tag)),
+      tag,
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout title={`${tag} - Weird Science News`} description={`Articles tagged with ${tag}`}>
+  <div class="mb-8">
+    <a href="/tags" class="text-blue-600 dark:text-blue-400 hover:underline">&larr; All Tags</a>
+  </div>
+  
+  <h1 class="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+    Articles tagged with "{tag}"
+  </h1>
+
+  <ul class="space-y-6">
+    {posts.map((post) => (
+      <li class="group">
+        <a
+          href={`/posts/${post.slug}`}
+          class="text-xl text-blue-600 dark:text-blue-400 hover:underline block"
+        >
+          {post.title}
+        </a>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">{post.summary}</p>
+        <div class="text-sm text-gray-500 dark:text-gray-500 mt-1">
+          {new Date(post.date).toLocaleDateString()}
+        </div>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
