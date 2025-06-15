@@ -14,9 +14,13 @@ const authors = Object.entries(authorImports).map(([path, mod]) => ({
   
   <div class="space-y-8">
     {authors.map((author) => (
-      <a href={`/authors/${author.slug}`} class="block hover:shadow-lg transition-shadow rounded-lg">
-        <AuthorBio {...author} />
-      </a>
+      <div class="group transition-all duration-200 hover:transform hover:translate-y-[-2px]">
+        <a href={`/authors/${author.slug}`} class="block no-underline hover:no-underline [&_*]:no-underline [&_*]:hover:no-underline">
+          <div class="rounded-lg ring-1 ring-gray-200 dark:ring-gray-700 group-hover:ring-blue-500 dark:group-hover:ring-blue-400 group-hover:shadow-lg transition-all duration-200">
+            <AuthorBio {...author} isLink={true} />
+          </div>
+        </a>
+      </div>
     ))}
   </div>
 </BaseLayout>
