@@ -40,15 +40,43 @@
 
 <script>
   const form = document.getElementById('newsletter-form');
-  
+    const showMessage = (message: string, isError = false) => {
+    const existingMessage = form?.querySelector('.message');
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    const messageEl = document.createElement('p');
+    messageEl.className = `message text-sm mt-2 ${isError ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`;
+    messageEl.textContent = message;
+    form?.appendChild(messageEl);
+
+    if (!isError) {
+      const input = form?.querySelector('input[type="email"]') as HTMLInputElement;
+      if (input) {
+        input.value = '';
+      }
+    }
+  };
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get('email');
     
-    try {
-      // Replace with your actual API endpoint
-      const response = await fetch('/api/subscribe', {
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Subscribing...';
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get('email')?.toString().trim();
+
+    if (!email) {
+      showMessage('Please enter a valid email address.', true);
+      submitButton.disabled = false;
+      submitButton.textContent = 'Subscribe';
+      return;
+    }
+    
+    try {      const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,14 +84,18 @@
         body: JSON.stringify({ email }),
       });
       
-      if (response.ok) {
-        alert('Thanks for subscribing! Please check your email to confirm.');
-        (e.target as HTMLFormElement).reset();
-      } else {
-        throw new Error('Subscription failed');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Subscription failed');
       }
+      
+      showMessage(data.message || 'Successfully subscribed to the newsletter!');
     } catch (error) {
-      alert('Sorry, there was an error. Please try again later.');
+      showMessage(error instanceof Error ? error.message : 'An error occurred while subscribing.', true);
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Subscribe';
     }
   });
 </script>

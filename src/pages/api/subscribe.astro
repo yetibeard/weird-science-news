@@ -1,32 +1,138 @@
 ---
-export async function POST({ request }) {
-  const { email } = await request.json();
+import { z } from 'zod';
+import sanitizeHtml from 'sanitize-html';
 
+// Rate limiting map: email -> { attempts: number, lastAttempt: Date }
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 3600000; // 1 hour in milliseconds
+const MAX_ATTEMPTS = 5;
+
+// Email validation schema
+const emailSchema = z
+  .string()
+  .email()
+  .transform((email) => email.toLowerCase().trim())
+  .refine((email) => email.length <= 255, {
+    message: 'Email is too long'
+  });
+
+function isRateLimited(email: string): boolean {
+  const now = Date.now();
+  const rateLimit = rateLimitMap.get(email);
+
+  if (!rateLimit) {
+    rateLimitMap.set(email, { attempts: 1, lastAttempt: now });
+    return false;
+  }
+
+  if (now - rateLimit.lastAttempt > RATE_LIMIT_WINDOW) {
+    rateLimitMap.set(email, { attempts: 1, lastAttempt: now });
+    return false;
+  }
+
+  if (rateLimit.attempts >= MAX_ATTEMPTS) {
+    return true;
+  }
+
+  rateLimit.attempts += 1;
+  rateLimit.lastAttempt = now;
+  rateLimitMap.set(email, rateLimit);
+  return false;
+}
+
+export async function POST({ request }) {
   try {
+    // Validate request content type
+    const contentType = request.headers.get('content-type');
+    if (!contentType?.includes('application/json')) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Invalid content type' 
+        }), 
+        { 
+          status: 415,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+
+    const body = await request.json();
+    
+    // Sanitize and validate email
+    const sanitizedEmail = sanitizeHtml(body.email || '', {
+      allowedTags: [],
+      allowedAttributes: {}
+    });
+
+    const emailResult = emailSchema.safeParse(sanitizedEmail);
+
+    if (!emailResult.success) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Invalid email address' 
+        }), 
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+
+    const email = emailResult.data;
+
+    // Check rate limiting
+    if (isRateLimited(email)) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Too many attempts. Please try again later.' 
+        }), 
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+
     // TODO: Replace with your actual newsletter service integration
     // Example services: Mailchimp, ConvertKit, Substack, etc.
-    console.log('New subscription:', email);
-
-    // For now, we'll just return a success response
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: 'Subscription successful' 
-    }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json'
+    
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        message: 'Subscription successful' 
+      }), 
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    );
   } catch (error) {
-    return new Response(JSON.stringify({ 
-      success: false, 
-      message: 'Subscription failed' 
-    }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
+    // Log error internally but don't expose details to client
+    console.error('Newsletter subscription error:', error);
+    
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        message: 'An error occurred while processing your request' 
+      }), 
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    );
   }
 }
 ---
